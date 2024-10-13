@@ -43,7 +43,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: cloujen.com  # Replace with your actual domain
+    - host: torch.manalabs.cloud  # Replace with your actual domain
       http:
         paths:
           - path: /
