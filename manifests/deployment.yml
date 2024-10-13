@@ -27,7 +27,7 @@ metadata:
   labels:
     app: torch-app
 spec:
-  type: ClusterIP  # Change to LoadBalancer if needed
+  type: LoadBalancer # Change to LoadBalancer if needed
   ports:
     - port: 80
       targetPort: 3000
