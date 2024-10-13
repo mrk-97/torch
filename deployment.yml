@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: torch-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: torch-app
+  template:
+    metadata:
+      labels:
+        app: torch-app
+    spec:
+      serviceAccountName: ecr-access-sa  # Specify the service account here
+      containers:
+        - name: torch
+          image: 664418989412.dkr.ecr.ap-south-1.amazonaws.com/prod/torch:latest
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: torch-app
+  labels:
+    app: torch-app
+spec:
+  type: ClusterIP  # Change to LoadBalancer if needed
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    app: torch-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: torch-app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: cloujen.com  # Replace with your actual domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: torch-app
+                port:
+                  number: 80
